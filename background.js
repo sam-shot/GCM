@@ -63,7 +63,7 @@ chrome.runtime.onMessage.addListener(async function (
       console.log(userId);
       if (!token) {
         console.log("No token about to get a token");
-        SW.getToken()
+        await SW.getToken()
           .then(() => {
             SW.registeroffScreen();
             SW.startListen();
@@ -126,12 +126,12 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
   if (notificationId === "send-text") {
     const token = await StorageService.get("token");
     const currentClipboardData = await StorageService.get("g");
-
+    const id = await StorageService.get("userId");
     sendPostRequest(
       {
         endpoint: "send/text",
         data: {
-          userId: userId,
+          userId: id,
           firebaseId: token,
           text: currentClipboardData,
         },

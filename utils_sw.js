@@ -46,7 +46,7 @@ export class SW {
       });
       if (token) {
         StorageService.write("token", token);
-        SW.linkDevice(token).then(() => {
+        await SW.linkDevice(token).then(() => {
           resolve();
         });
       } else {
@@ -72,7 +72,7 @@ export class SW {
       const deviceName = navigator.userAgentData["platform"];
       const userId = await StorageService.get("userId");
       console.log("Device Name:", deviceName);
-      sendPostRequest(
+      await sendPostRequest(
         {
           endpoint: "user/updateDeviceId",
           data: {
