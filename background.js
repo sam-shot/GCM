@@ -47,7 +47,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-chrome.runtime.onStartup.addListener(async (details) => {});
+chrome.runtime.onStartup.addListener(async (details) => { });
 
 chrome.runtime.onMessage.addListener(async function (
   message,
@@ -90,10 +90,8 @@ chrome.runtime.onMessage.addListener(async function (
             });
         } else {
           console.log("Device already registered");
-          chrome.runtime.sendMessage({
-            action: "start-clip-listen",
-            target: "offscreen",
-          });
+          SW.registeroffScreen();
+          SW.startListen();
         }
       }
       break;
@@ -101,8 +99,9 @@ chrome.runtime.onMessage.addListener(async function (
       await SW.registeroffScreen();
       SW.startListen();
       break;
-    case "stop-service":
+    case "logout":
       SW.stopListen();
+      StorageService.write("token", null);
       break;
   }
 });
@@ -136,7 +135,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
           text: currentClipboardData,
         },
       },
-      (responseData) => {},
+      (responseData) => { },
       (error) => {
         console.log("Error:", error);
         NotificationService.basicNotification({

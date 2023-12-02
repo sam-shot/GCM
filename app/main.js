@@ -94,9 +94,29 @@ document.addEventListener("click", async function (event) {
   if (e.matches("#start-service-btn")) {
     chrome.runtime.sendMessage({ action: "resume-service" });
     console.log("Start from UI");
-  } else if (e.matches("#stop-service-btn")) {
-    chrome.runtime.sendMessage({ action: "stop-service" });
-    console.log("Stop from UI");
+  } else if (e.matches("#log-out")) {
+    
+    isLoading(true);
+    const id = await getStorage("userId");
+    const token = await getStorage("token");
+    const data = {
+      userId: id,
+      deviceId: token,
+    };
+     await sendPostRequest({
+      endpoint: "user/removeDevice",
+      body: JSON.stringify(data),
+      method: "POST",
+    });
+    
+    setStorage("userId", null);
+    setStorage("isRegistered", false);
+    chrome.runtime.sendMessage({ action: "logout" });
+    
+    isLoading(false);
+    document.getElementById("main_container").style.display = "flex";
+    document.getElementById("home_container").style.display = "none";
+    console.log("logout");
   }
 });
 
